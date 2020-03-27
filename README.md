@@ -36,3 +36,16 @@
 
 ## 2. Crear una máquina virtual Linux en AWS
 
+2.1 
+
+![Captura9](https://user-images.githubusercontent.com/48154086/77794253-8da3f200-7039-11ea-8df6-e2e00e2118c2.PNG)
+
+2.2 
+
+![Captura11](https://user-images.githubusercontent.com/48154086/77794254-8e3c8880-7039-11ea-800b-50ae1566cf28.PNG)
+
+2.3 
+
+
+
+
