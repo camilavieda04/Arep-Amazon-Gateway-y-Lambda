@@ -125,6 +125,10 @@ Creamos una aplicación web usando Spark la cual le solicita al usuario un numer
     }
     
 ```
+## 4. Probar la aplicación WEB.
 
+Finalmente probamos nuestra aplicación.
+
+![Captura15](https://user-images.githubusercontent.com/48154086/77807307-6e1ac280-7055-11ea-8f47-f78742ee916e.PNG)
 
 
