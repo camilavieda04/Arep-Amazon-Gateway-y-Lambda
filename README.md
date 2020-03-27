@@ -36,16 +36,95 @@
 
 ## 2. Crear una máquina virtual Linux en AWS
 
-2.1 
+2.1 Entramos al servicio de EC2 para verificar nuestra instancia.
 
 ![Captura9](https://user-images.githubusercontent.com/48154086/77794253-8da3f200-7039-11ea-8df6-e2e00e2118c2.PNG)
 
-2.2 
+2.2 Realizamos la conexión a nuestra instancia.
 
 ![Captura11](https://user-images.githubusercontent.com/48154086/77794254-8e3c8880-7039-11ea-800b-50ae1566cf28.PNG)
 
-2.3 
+2.3 Utilizando Git Bash nos conectamos a la máquina creada en EC2.
 
+![Captura12](https://user-images.githubusercontent.com/48154086/77805569-365d4c00-7050-11ea-8f45-667820544125.PNG)
+
+## 3. Crear una aplicación WEB, usando Spark, Que tenga un formulario que le pida al usuario un número y le regrese el cuadrado del mismo. Esta se debe desplegar en AWS. OJO: La aplicación Web debe usar el servicio de de Amazon GateWay para calcular el valor. Configure la aplicación dentro de un grupo de autoescalabilidad.
+
+Creamos una aplicación web usando Spark la cual le solicita al usuario un numero para calcular el cuadrado y luego utilizamos la conexión al API creado en AWS. 
+
+``` java
+    
+     */
+    public class MathServices {
+      private static URL url;
+
+      public static void main(String[] args) {
+          port(getPort());
+          get("/inputdata", (req, res) -> inputDataPage(req, res));
+          get("/results", (req, res) -> {
+              res.type("application/json");
+              return resultDataPage(req,res);
+          });
+      }
+
+      public static Integer square(Integer i) {
+          return i * i;
+      }
+
+
+      private static String resultDataPage(Request req, Response res) {
+        int num = Integer.parseInt(req.queryParams("numero"));
+        String text = "";
+        try {
+            url = new URL("https://svz7imsuh3.execute-api.us-east-1.amazonaws.com/Beta" + "?value=" + num);
+            String temp;
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(url.openStream()));
+            while ((temp = reader.readLine()) != null) {
+                text = text + temp;
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(MathServices.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MathServices.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return text;
+    }
+
+
+
+      /**
+       * Este metodo recibe los datos que el usuario desea agregar a la Linked
+       * List
+       *
+       * @param req
+       * @param res
+       * @return pageC
+       */
+      private static String inputDataPage(Request req, Response res) {
+          String pageC
+                  = "<!DOCTYPE html>"
+                  + "<html>"
+                  + "<body>"
+                  + "<h2>Bandeja de entrada de los numeros:</h2>"
+                  + "<h2>Introduzca el numero para calcular el cuadrado</h2>"
+                  + "<form action='/resultados\'>"
+                  + "<input type=\"text\" name='data'>"
+                  + "<input type=\"submit\" value=\"Continue\">"
+                  + "</form>"
+                  + "</body>"
+                  + "</html>";
+          return pageC;
+      }
+
+      static int getPort() {
+          if (System.getenv("PORT") != null) {
+              return Integer.parseInt(System.getenv("PORT"));
+          }
+          return 4567;
+    }
+    
+```
 
 
 
