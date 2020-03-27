@@ -5,8 +5,16 @@
  */
 package edu.escuelaing.arep.Taller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static spark.Spark.*;
 import spark.Request;
 import spark.Response;
@@ -20,10 +28,15 @@ import org.json.simple.parser.ParseException;
  * @author sarah.vieda
  */
 public class MathServices {
+    private static URL url;
 
     public static void main(String[] args) {
         port(getPort());
         get("/inputdata", (req, res) -> inputDataPage(req, res));
+        get("/results", (req, res) -> {
+            res.type("application/json");
+            return resultDataPage(req,res);
+        });
     }
 
     public static Integer square(Integer i) {
@@ -31,27 +44,26 @@ public class MathServices {
     }
 
  
-    private static JSONObject resultDataPage(Request req, Response res) {
-        JSONObject resp = new JSONObject();
-        JSONArray array = new JSONArray();
-        //String[] valores = req.queryParams("data").split(",");
-        //int[] l = new int[valores.length];
-        /*int temp = 0;
-        for (String i : valores) {
-            int entero = Integer.parseInt(i);
-            l[temp] = entero;
-            temp++;
-        }*/
+    private static String resultDataPage(Request req, Response res) {
+      int num = Integer.parseInt(req.queryParams("numero"));
+      String text = "";
+      try {
+          url = new URL("https://svz7imsuh3.execute-api.us-east-1.amazonaws.com/Beta" + "?value=" + num);
+          String temp;
+          BufferedReader reader = new BufferedReader(
+                  new InputStreamReader(url.openStream()));
+          while ((temp = reader.readLine()) != null) {
+              text = text + temp;
+          }
+      } catch (MalformedURLException ex) {
+          Logger.getLogger(MathServices.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (IOException ex) {
+          Logger.getLogger(MathServices.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return text;
+  }
 
-        //Ordena.retornaSuma(l);
-       
-        resp.put("Lista de valores", array);
-        //sumatoria
-        //resp.put("Cuadrado", square());
-
-        return resp;
-
-    }
+    
 
     /**
      * Este metodo recibe los datos que el usuario desea agregar a la Linked
